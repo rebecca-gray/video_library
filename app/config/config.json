@@ -1,0 +1,49 @@
+{
+
+    "development": {
+
+        "username": "root",
+
+        "password": null,
+
+        "database": "video_library",
+
+        "host": "localhost:8080",
+
+        "dialect": "sqlite",
+        "storage": "../../db"
+
+    },
+
+    "test": {
+
+        "username": "",
+
+        "password": null,
+
+        "database": "",
+
+        "host": "",
+
+        "dialect": "sqlite",
+
+        "storage": "../../db"
+
+    },
+
+    "production": {
+
+        "username": "",
+
+        "password": null,
+
+        "database": "",
+
+        "host": "localhost:8080",
+
+        "dialect": "sqlite",
+        "storage": "../../db"
+
+    }
+
+}
