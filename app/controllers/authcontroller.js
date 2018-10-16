@@ -1,17 +1,26 @@
 var exports = module.exports = {}
 
-exports.signup = function(req, res) {
+exports.signup = (req, res) => {
 
     res.render('signup');
 
 }
-exports.signin = function(req, res) {
+exports.signin = (req, res) => {
 
     res.render('signin');
 
 }
-exports.dashboard = function(req, res) {
+exports.dashboard = (req, res) => {
 
     res.render('dashboard');
+
+}
+exports.logout = (req, res) => {
+
+    req.session.destroy((err) => {
+
+        res.redirect('/');
+
+    });
 
 }

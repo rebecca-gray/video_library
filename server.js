@@ -1,12 +1,12 @@
-var express = require('express');
-var passport = require('passport')
-var session = require('express-session')
-var bodyParser = require('body-parser')
-var env = require('dotenv').load();
-var models = require("./app/models");
-var exphbs = require('express-handlebars');
+const express = require('express');
+const passport = require('passport')
+const session = require('express-session')
+const bodyParser = require('body-parser')
+const env = require('dotenv').load();
+const models = require("./app/models");
+const exphbs = require('express-handlebars');
 
-var app = express();
+const app = express();
 
 //For BodyParser
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -18,7 +18,7 @@ app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 
 //Routes
-var authRoute = require('./app/routes/auth.js')(app, passport);
+const authRoute = require('./app/routes/auth.js')(app, passport);
 
 //load passport strategies
 require('./app/config/passport.js')(passport, models.user);
@@ -36,19 +36,18 @@ app.get('/', function(req, res) {
 
 });
 
-
 //Sync Database
-models.sequelize.sync().then(function() {
+models.sequelize.sync().then(() => {
     console.log('Nice! Database looks fine');
 }).catch(function(err) {
     console.log(err, "Something went wrong with the Database Update!");
 });
 
+app.listen(5000, (err) => {
 
-app.listen(5000, function(err) {
-
-    if (!err)
+    if (!err) {
         console.log("Site is live");
-    else console.log(err)
-
+    } else {
+      console.log(err)
+    }
 });
