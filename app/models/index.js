@@ -1,32 +1,37 @@
-"use strict";
-
-const fs = require("fs");
-const path = require("path");
 const Sequelize = require("sequelize");
-const env = process.env.NODE_ENV || "development";
-const config = require(path.join(__dirname, '..', 'config', 'config.json'))[env];
-const sequelize = new Sequelize(config.database, config.username, config.password, config);
-const db = {};
+const UserModel = require('./user')
+const VideoModel = require('./video')
+const AspectRatioModel = require('./aspectRatio')
+const TypeModel = require('./type')
+const MetadataModel = require('./metadata')
 
-
-fs
-    .readdirSync(__dirname)
-    .filter(function(file) {
-        return (file.indexOf(".") !== 0) && (file !== "index.js");
-    })
-    .forEach(function(file) {
-        var model = sequelize.import(path.join(__dirname, file));
-        db[model.name] = model;
-    });
-
-Object.keys(db).forEach((modelName) => {
-    if ("associate" in db[modelName]) {
-        db[modelName].associate(db);
-    }
+const sqlite = require('sqlite3');
+const db = new sqlite.Database("../../test.sqlite");
+const sequelize = new Sequelize('database', '', '', {
+  dialect: 'sqlite',
+  storage: "../../test.sqlite"
 });
 
+const User = UserModel(sequelize, Sequelize);
+const Video = VideoModel(sequelize, Sequelize);
+const AspectRatio = AspectRatioModel(sequelize, Sequelize);
+const Type = TypeModel(sequelize, Sequelize);
+const Metadata = MetadataModel(sequelize, Sequelize);
 
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
+Video.belongsTo(AspectRatio);
+Video.belongsTo(Type);
+Video.belongsTo(Metadata);
 
-module.exports = db;
+sequelize.sync({ force: true })
+  .then(() => {
+    console.log(`Database & tables created!`)
+  });
+
+
+module.exports = {
+  User,
+  Video,
+  Type,
+  AspectRatio,
+  Metadata,
+}

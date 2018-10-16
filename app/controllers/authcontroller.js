@@ -1,13 +1,8 @@
 var exports = module.exports = {}
 
-exports.signup = (req, res) => {
+exports.login = (req, res) => {
 
-    res.render('signup');
-
-}
-exports.signin = (req, res) => {
-
-    res.render('signin');
+    res.render('login');
 
 }
 exports.dashboard = (req, res) => {

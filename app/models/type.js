@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) =>
 
-    sequelize.define('user', {
+    sequelize.define('type', {
 
         id: {
             autoIncrement: true,
@@ -8,13 +8,8 @@ module.exports = (sequelize, Sequelize) =>
             type: Sequelize.INTEGER
         },
 
-        username: {
+        type: {
             type: Sequelize.TEXT
-        },
-
-        password: {
-            type: Sequelize.STRING,
-            allowNull: false
         }
-        
+
     });

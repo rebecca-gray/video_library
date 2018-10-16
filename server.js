@@ -1,10 +1,12 @@
 const express = require('express');
-const passport = require('passport')
-const session = require('express-session')
+const passport = require("passport")
+require('./app/passport/passport');
+// const session = require('express-session')
 const bodyParser = require('body-parser')
 const env = require('dotenv').load();
 const models = require("./app/models");
 const exphbs = require('express-handlebars');
+const authController = require('./app/controllers/authcontroller.js');
 
 const app = express();
 
@@ -12,16 +14,16 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// For Passport
-app.use(session({ secret: 'keyboard cat',resave: true, saveUninitialized:true})); // session secret
-app.use(passport.initialize());
-app.use(passport.session()); // persistent login sessions
-
 //Routes
-const authRoute = require('./app/routes/auth.js')(app, passport);
+const auth = require('./app/routes/auth.js');
+const user = require('./app/routes/user.js');
 
-//load passport strategies
-require('./app/config/passport.js')(passport, models.user);
+app.get('/', authController.login);
+app.post('/login', auth);
+app.use('/user', passport.authenticate('jwt', {session: false}), user);
+// app.get('/', function(req, res) {
+//     res.send('Welcome to Video Library');
+// });
 
 //For Handlebars
 app.set('views', './app/views')
@@ -30,21 +32,7 @@ app.engine('hbs', exphbs({
 }));
 app.set('view engine', '.hbs');
 
-app.get('/', function(req, res) {
-
-    res.send('Welcome to Passport with Sequelize');
-
-});
-
-//Sync Database
-models.sequelize.sync().then(() => {
-    console.log('Nice! Database looks fine');
-}).catch(function(err) {
-    console.log(err, "Something went wrong with the Database Update!");
-});
-
 app.listen(5000, (err) => {
-
     if (!err) {
         console.log("Site is live");
     } else {
