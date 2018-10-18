@@ -1,59 +1,34 @@
-const express = require("express");
+const express = require('express');
 const router  = express.Router();
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 const passport = require("passport");
-
+var models  = require('../models/index');
 /* POST login. */
 router.post('/login', function (req, res, next) {
-    passport.authenticate('jwt', {session: false}, (err, user, info) => {
-        console.log("@@ in", err, user, info)
+    passport.authenticate('local', {session: false}, (err, user, info) => {
         if (err || !user) {
-            return res.status(400).json({
-                message: 'Something is not right',
-                user   : user,
-                err: err
-            });
+            // create user
+            // add bcrypt for password
+            models.User.create({
+                email: req.body.email,
+                password: req.body.password,
+            }).then((user) => {
+                const body = JSON.stringify({ _id : user.id, email : user.email });
+                const token = jwt.sign({ user: body }, 'your_jwt_secret');
+                return res.redirect('/dashboard');
+            })
         }
-       req.login(user, {session: false}, (err) => {
-           if (err) {
-               res.send(err);
-           }
-           // generate a signed son web token with the contents of user object and return it in the response
-           const token = jwt.sign(user, '123');
-           return res.json({user, token});
-        });
+    //    req.login(user, {session: false}, (err) => {
+    //        if (err) {
+    //            res.send(err);
+    //        }
+    //        console.log("@@ user", req)
+    //        // generate a signed son web token with the contents of user object and return it in the response
+    //        const body = JSON.stringify({ _id : 123, email : user.email });
+    //        const token = jwt.sign({ user: body }, 'your_jwt_secret');
+    //        return res.json({user, token});
+    //     });
     })(req, res);
 });
 
 module.exports = router;
-
-// const authController = require('../controllers/authcontroller.js');
-//
-// const isLoggedIn = (req, res, next) => {
-//   if (req.isAuthenticated())
-//       return next();
-//   res.redirect('/signin');
-// }
-//
-// module.exports = function(app, passport) {
-//     app.get('/signup', authController.signup);
-//     app.get('/signin', authController.signin);
-//     app.get('/dashboard',isLoggedIn, authController.dashboard);
-//     app.get('/logout',authController.logout);
-//
-//     app.post('/signup', passport.authenticate('local-signup', {
-//             successRedirect: '/dashboard',
-//
-//             failureRedirect: '/signup'
-//         }
-//
-//     ));
-//
-//     app.post('/signin', passport.authenticate('local-signin', {
-//             successRedirect: '/dashboard',
-//
-//             failureRedirect: '/signin'
-//         }
-//
-//     ));
-// }

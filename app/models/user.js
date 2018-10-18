@@ -8,7 +8,7 @@ module.exports = (sequelize, Sequelize) =>
             type: Sequelize.INTEGER
         },
 
-        username: {
+        email: {
             type: Sequelize.TEXT
         },
 
@@ -16,5 +16,5 @@ module.exports = (sequelize, Sequelize) =>
             type: Sequelize.STRING,
             allowNull: false
         }
-        
+
     });
